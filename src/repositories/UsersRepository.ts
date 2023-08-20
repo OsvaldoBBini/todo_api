@@ -1,10 +1,15 @@
 import prismaClient from '../prisma';
-import { User } from '../types';
+
+interface NewUser {
+  name: string,
+  email: string,
+  password: string,
+  profilePicture: string | null
+}
 
 class UsersRepository {
 
-  async create({name,email, password, profilePicture}: User) {
-    const newUser = {name, email, password, profilePicture};
+  async create(newUser: NewUser) {
     const user =  await prismaClient.users.create({data: newUser});
     return user;
   }
@@ -12,7 +17,12 @@ class UsersRepository {
   async findByEmail(email: string) {
     const user = await prismaClient.users.findUnique({
       where: {email},
-      select: {id: true}
+      select: {
+        id: true,
+        name: true,
+        email: true ,
+        password: true,
+        profilePicture: true}
     });
     return user;
   }
