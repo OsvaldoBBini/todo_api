@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id             String    @id @default(uuid()) @db.Uuid
+  name           String
+  email          String    @unique
+  password       String
+  profilePicture String?
+  Folders        Folders[]
+
+  @@map("users")
+}
+
+model Folders {
+  id          String     @id @default(uuid()) @db.Uuid
+  userId      String     @map("user_id") @db.Uuid
+  name        String
+  description String?
+  Users       Users      @relation(fields: [userId], references: [id])
+  tasks       Tasks[]
+  SubTasks    SubTasks[]
+
+  @@map("folders")
+}
+
+model Tasks {
+  id          String     @id @default(uuid()) @db.Uuid
+  folderId    String     @map("folder_id") @db.Uuid
+  description String
+  status      Boolean
+  Folders     Folders    @relation(fields: [folderId], references: [id])
+  SubTasks    SubTasks[]
+
+  @@map("tasks")
+}
+
+model SubTasks {
+  id          String  @id @default(uuid()) @db.Uuid
+  folderId    String  @map("folder_id") @db.Uuid
+  taskId      String  @map("task_id") @db.Uuid
+  description String
+  status      Boolean
+  Folders     Folders @relation(fields: [folderId], references: [id])
+  Tasks       Tasks   @relation(fields: [taskId], references: [id])
+
+  @@map("subtasks")
+}
