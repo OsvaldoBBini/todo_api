@@ -8,12 +8,14 @@ datasource db {
 }
 
 model Users {
-  id             String    @id @default(uuid()) @db.Uuid
+  id             String     @id @default(uuid()) @db.Uuid
   name           String
-  email          String    @unique
+  email          String     @unique
   password       String
   profilePicture String?
-  Folders        Folders[]
+  folders        Folders[]
+  tasks          Tasks[]
+  subTasks       SubTasks[]
 
   @@map("users")
 }
@@ -23,32 +25,36 @@ model Folders {
   userId      String     @map("user_id") @db.Uuid
   name        String
   description String?
-  Users       Users      @relation(fields: [userId], references: [id])
+  user        Users      @relation(fields: [userId], references: [id], onDelete: Cascade)
   tasks       Tasks[]
-  SubTasks    SubTasks[]
+  subTasks    SubTasks[]
 
   @@map("folders")
 }
 
 model Tasks {
   id          String     @id @default(uuid()) @db.Uuid
+  userId      String     @map("user_id") @db.Uuid
   folderId    String     @map("folder_id") @db.Uuid
   description String
   status      Boolean
-  Folders     Folders    @relation(fields: [folderId], references: [id])
-  SubTasks    SubTasks[]
+  user        Users      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  folders     Folders    @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  subTasks    SubTasks[]
 
   @@map("tasks")
 }
 
 model SubTasks {
   id          String  @id @default(uuid()) @db.Uuid
+  userId      String  @map("user_id") @db.Uuid
   folderId    String  @map("folder_id") @db.Uuid
   taskId      String  @map("task_id") @db.Uuid
   description String
   status      Boolean
-  Folders     Folders @relation(fields: [folderId], references: [id])
-  Tasks       Tasks   @relation(fields: [taskId], references: [id])
+  user        Users   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  folders     Folders @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  tasks       Tasks   @relation(fields: [taskId], references: [id], onDelete: Cascade)
 
   @@map("subtasks")
 }
