@@ -12,6 +12,7 @@ class UserController {
       return response.json({error: (err as Error).message});
     }
   }
+
 }
 
 export {UserController};

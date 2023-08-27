@@ -12,7 +12,7 @@ model Users {
   name           String
   email          String     @unique
   password       String
-  profilePicture String?
+  profilePicture String?    @default("")
   folders        Folders[]
   tasks          Tasks[]
   subTasks       SubTasks[]

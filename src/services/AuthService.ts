@@ -1,25 +1,13 @@
 import { UsersRepository } from '../repositories/UsersRepository';
 import { hash, compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
-
-interface User {
-  id: string,
-  name: string,
-  email: string,
-  password: string,
-  profilePicture: string | null
-}
-
-interface UserLogin {
-  email: string,
-  password: string
-}
+import { INewUser, IUser, IUserLogin } from '../types/types';
 
 class AuthService {
 
-  async signup(userData: User) {
+  async signup(userData: INewUser) {
 
-    const {name, password, email, profilePicture} = userData;
+    const {name, password, email} = userData;
     const emailTaken = await new UsersRepository().findByEmail(email);
 
     if (emailTaken){
@@ -30,14 +18,14 @@ class AuthService {
     const hashedPassword = await hash(passwordVerified, 12);
 
     const user = await new UsersRepository().create({
-      name, password: hashedPassword, email, profilePicture
+      name, password: hashedPassword, email
     });
 
     const accessToken = this.generateToken(user);
     return { accessToken };
   }
 
-  async signin(userData: UserLogin) {
+  async signin(userData: IUserLogin) {
 
     const { email, password } = userData;
     const user = await new UsersRepository().findByEmail(email);
@@ -55,7 +43,7 @@ class AuthService {
     return { accessToken };
   }
 
-  generateToken(user: User) {
+  generateToken(user: IUser) {
     const jwtSecret = process.env.JWT_SECRET;
     if (jwtSecret) {
       const token = sign(
@@ -65,7 +53,6 @@ class AuthService {
             name: user.name,
             password: user.password,
             email: user.email,
-            profilePicture: user.profilePicture
           }
         },
         jwtSecret,

@@ -1,44 +1,26 @@
 import prismaClient from '../prisma';
-
-interface NewUser {
-  name: string,
-  email: string,
-  password: string,
-  profilePicture: string | null
-}
+import { INewUser } from '../types/types';
 
 class UsersRepository {
 
-  async create(newUser: NewUser) {
+  async create(newUser: INewUser) {
     const user =  await prismaClient.users.create({data: newUser});
     return user;
   }
 
   async findByEmail(email: string) {
     const user = await prismaClient.users.findUnique({
-      where: {email},
-      select: {
-        id: true,
-        name: true,
-        email: true ,
-        password: true,
-        profilePicture: true}
+      where: {email}
     });
     return user;
   }
 
   async findById(userId: string) {
     const user = await prismaClient.users.findUnique({
-      where: { id: userId },
-      select: {
-        name: true,
-        email: true,
-        profilePicture: true,
-        folders: true }
+      where: { id: userId }
     });
     return user;
   }
-
 }
 
 export {UsersRepository};
