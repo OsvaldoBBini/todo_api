@@ -25,6 +25,16 @@ class AuthController {
     }
   }
 
+  async recoverPassword(request: Request, response: Response) {
+    try {
+      const { email } = request.body;
+      const recoverCode = await new AuthService().recoverPassword(email);
+      return response.status(204).json(recoverCode);
+    }
+    catch (err) {
+      return response.json({error: (err as Error).message});
+    }
+  }
 }
 
 export {AuthController};

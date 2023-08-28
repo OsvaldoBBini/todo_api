@@ -8,16 +8,26 @@ datasource db {
 }
 
 model Users {
-  id             String     @id @default(uuid()) @db.Uuid
+  id             String       @id @default(uuid()) @db.Uuid
   name           String
-  email          String     @unique
+  email          String       @unique
   password       String
-  profilePicture String?    @default("")
+  profilePicture String       @default("")
   folders        Folders[]
-  tasks          Tasks[]
-  subTasks       SubTasks[]
+  ResetCode      ResetCodes[]
 
   @@map("users")
+}
+
+model ResetCodes {
+  id             String   @id @default(uuid()) @db.Uuid
+  email          String   @unique @map("email")
+  code           String   @unique
+  expirationTime DateTime
+  createdAt      DateTime @default(now())
+  user           Users    @relation(fields: [email], references: [email])
+
+  @@map("reset_codes")
 }
 
 model Folders {
@@ -34,11 +44,9 @@ model Folders {
 
 model Tasks {
   id          String     @id @default(uuid()) @db.Uuid
-  userId      String     @map("user_id") @db.Uuid
   folderId    String     @map("folder_id") @db.Uuid
   description String
   status      Boolean
-  user        Users      @relation(fields: [userId], references: [id], onDelete: Cascade)
   folders     Folders    @relation(fields: [folderId], references: [id], onDelete: Cascade)
   subTasks    SubTasks[]
 
@@ -47,12 +55,10 @@ model Tasks {
 
 model SubTasks {
   id          String  @id @default(uuid()) @db.Uuid
-  userId      String  @map("user_id") @db.Uuid
   folderId    String  @map("folder_id") @db.Uuid
   taskId      String  @map("task_id") @db.Uuid
   description String
   status      Boolean
-  user        Users   @relation(fields: [userId], references: [id], onDelete: Cascade)
   folders     Folders @relation(fields: [folderId], references: [id], onDelete: Cascade)
   tasks       Tasks   @relation(fields: [taskId], references: [id], onDelete: Cascade)
 

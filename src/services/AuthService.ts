@@ -2,6 +2,7 @@ import { UsersRepository } from '../repositories/UsersRepository';
 import { hash, compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 import { INewUser, IUser, IUserLogin } from '../types/types';
+import { RecoverCodeRepository } from '../repositories/RecoverCodeRepository';
 
 class AuthService {
 
@@ -41,6 +42,32 @@ class AuthService {
 
     const accessToken = this.generateToken(user);
     return { accessToken };
+  }
+
+  async recoverPassword(email: string) {
+
+    const emailTaken = await new UsersRepository().findByEmail(email);
+
+    if (!emailTaken){
+      throw new Error('User not found');
+    }
+
+    const now = new Date();
+    const expirationTime = new Date(now.getTime() + 2 * 60 * 1000);
+
+    const code = String(Math.floor(Math.random() * (99999999 - 10000000 + 1)) + 10000000);
+    console.log(code);
+
+    const hashedCode = await hash(code, 12);
+
+    const newRecoverCode = {
+      email,
+      code: hashedCode,
+      expirationTime
+    };
+
+    const recoverCode = await new RecoverCodeRepository().create(newRecoverCode);
+    return recoverCode;
   }
 
   generateToken(user: IUser) {

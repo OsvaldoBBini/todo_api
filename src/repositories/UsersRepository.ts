@@ -1,5 +1,5 @@
 import prismaClient from '../prisma';
-import { INewUser } from '../types/types';
+import { INewUser, IUpdateUserInfos } from '../types/types';
 
 class UsersRepository {
 
@@ -21,6 +21,36 @@ class UsersRepository {
     });
     return user;
   }
+
+  async updateUserInfos(userId: string, updateUserData: IUpdateUserInfos) {
+
+    const {name, email, profilePicture} = updateUserData;
+
+    const user = await prismaClient.users.update({
+      where: {
+        id: userId
+      },
+      data: {
+        name,
+        email,
+        profilePicture
+      }
+    });
+    return user;
+  }
+
+  async updateUserPassword(userId: string, password: string) {
+    const user = await prismaClient.users.update({
+      where: {
+        id: userId
+      },
+      data: {
+        password
+      }
+    });
+    return user;
+  }
+
 }
 
 export {UsersRepository};
