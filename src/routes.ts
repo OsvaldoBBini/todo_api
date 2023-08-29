@@ -13,7 +13,9 @@ router.post('/signup', new AuthController().signup);
 router.post('/signin', new AuthController().signin);
 
 router.post('/recover_password', new AuthController().recoverPassword);
-router.post('/reset_password', ensureRecoverCode, () => console.log('oi'));
+router.post('/authenticate_password_update', ensureRecoverCode, new AuthController().authenticatePasswordReset);
+router.post('/reset_password', ensureAuthenticated, new AuthController().resetPassword);
+
 
 router.get('/user/me', ensureAuthenticated, new UserController().getUser);
 router.patch('/user/me', ensureAuthenticated, uploadPicture, new UserController().updateUser);

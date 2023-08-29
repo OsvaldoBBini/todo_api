@@ -30,7 +30,7 @@ export interface IUserLogin {
   password: string
 }
 
-export interface IResetCode {
+export interface IRecoverCode {
   email: string,
   code: string,
   expirationTime: Date

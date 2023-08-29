@@ -4,20 +4,20 @@ CREATE TABLE "users" (
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
-    "profilePicture" TEXT NOT NULL DEFAULT '',
+    "profile_picture" TEXT NOT NULL DEFAULT '',
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "reset_codes" (
+CREATE TABLE "recover_codes" (
     "id" UUID NOT NULL,
     "email" TEXT NOT NULL,
     "code" TEXT NOT NULL,
-    "expirationTime" TIMESTAMP(3) NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "expiration_time" TIMESTAMP(3) NOT NULL,
+    "create_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "reset_codes_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "recover_codes_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -55,13 +55,13 @@ CREATE TABLE "subtasks" (
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "reset_codes_email_key" ON "reset_codes"("email");
+CREATE UNIQUE INDEX "recover_codes_email_key" ON "recover_codes"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "reset_codes_code_key" ON "reset_codes"("code");
+CREATE UNIQUE INDEX "recover_codes_code_key" ON "recover_codes"("code");
 
 -- AddForeignKey
-ALTER TABLE "reset_codes" ADD CONSTRAINT "reset_codes_email_fkey" FOREIGN KEY ("email") REFERENCES "users"("email") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "recover_codes" ADD CONSTRAINT "recover_codes_email_fkey" FOREIGN KEY ("email") REFERENCES "users"("email") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "folders" ADD CONSTRAINT "folders_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;

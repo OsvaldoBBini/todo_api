@@ -35,6 +35,32 @@ class AuthController {
       return response.json({error: (err as Error).message});
     }
   }
+
+  async authenticatePasswordReset(request: Request, response: Response) {
+    try {
+      const { email } = request;
+      const accessToken = await new AuthService().authenticatePasswordReset(email);
+      return response.json(accessToken);
+    }
+    catch (err) {
+      return response.json({error: (err as Error).message});
+    }
+  }
+
+  async resetPassword(request: Request, response: Response) {
+    try {
+      const { userId } = request;
+      const { password } = request.body;
+
+      const newPassword = await new AuthService().resetPassword(userId, password);
+      return response.status(204).json(newPassword);
+    }
+    catch (err) {
+      return response.json({error: (err as Error).message});
+    }
+  }
+
+
 }
 
 export {AuthController};

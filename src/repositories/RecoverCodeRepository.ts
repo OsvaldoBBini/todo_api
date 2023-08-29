@@ -1,15 +1,15 @@
-import { IResetCode }  from '../types/types';
+import { IRecoverCode }  from '../types/types';
 import prismaClient from '../prisma';
 
 class RecoverCodeRepository {
 
-  async create(newResetCode: IResetCode) {
-    const resetCode =  await prismaClient.resetCodes.create({data: newResetCode});
-    return resetCode;
+  async create(newRecoverCode: IRecoverCode) {
+    const recoverObject =  await prismaClient.recoverCodes.create({data: newRecoverCode});
+    return recoverObject;
   }
 
   async findCodeByEmail(email: string) {
-    const resetCode = await prismaClient.resetCodes.findUnique({
+    const recoverCode = await prismaClient.recoverCodes.findUnique({
       where:{
         email
       },
@@ -18,7 +18,16 @@ class RecoverCodeRepository {
         expirationTime: true
       }
     });
-    return resetCode;
+    return recoverCode;
+  }
+
+  async delete(email: string) {
+    const deletedRecoverCode = await prismaClient.recoverCodes.delete({
+      where: {
+        email
+      }
+    });
+    return deletedRecoverCode;
   }
 
 }

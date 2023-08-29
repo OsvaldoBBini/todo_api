@@ -20,6 +20,8 @@ export async function ensureRecoverCode(request: Request, response: Response, ne
       if(!isRecoverCodeValid) {
         return response.status(401).json({error: 'Invalid recover code'});
       }
+
+      request.email = email;
       return next();
     }
   }

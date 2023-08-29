@@ -8,26 +8,26 @@ datasource db {
 }
 
 model Users {
-  id             String       @id @default(uuid()) @db.Uuid
+  id             String         @id @default(uuid()) @db.Uuid
   name           String
-  email          String       @unique
+  email          String         @unique
   password       String
-  profilePicture String       @default("")
+  profilePicture String         @default("") @map("profile_picture")
   folders        Folders[]
-  ResetCode      ResetCodes[]
+  recoverCodes   RecoverCodes[]
 
   @@map("users")
 }
 
-model ResetCodes {
+model RecoverCodes {
   id             String   @id @default(uuid()) @db.Uuid
   email          String   @unique @map("email")
   code           String   @unique
-  expirationTime DateTime
-  createdAt      DateTime @default(now())
+  expirationTime DateTime @map("expiration_time")
+  createdAt      DateTime @default(now()) @map("create_at")
   user           Users    @relation(fields: [email], references: [email])
 
-  @@map("reset_codes")
+  @@map("recover_codes")
 }
 
 model Folders {

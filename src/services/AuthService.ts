@@ -22,7 +22,7 @@ class AuthService {
       name, password: hashedPassword, email
     });
 
-    const accessToken = this.generateToken(user);
+    const accessToken = this.generateToken(user, '1d');
     return { accessToken };
   }
 
@@ -40,7 +40,7 @@ class AuthService {
       throw new Error('Invalid credentials');
     }
 
-    const accessToken = this.generateToken(user);
+    const accessToken = this.generateToken(user, '1d');
     return { accessToken };
   }
 
@@ -49,14 +49,12 @@ class AuthService {
     const emailTaken = await new UsersRepository().findByEmail(email);
 
     if (!emailTaken){
-      throw new Error('User not found');
+      throw new Error('User not found, please provide valid credentials');
     }
 
     const now = new Date();
     const expirationTime = new Date(now.getTime() + 2 * 60 * 1000);
-
     const code = String(Math.floor(Math.random() * (99999999 - 10000000 + 1)) + 10000000);
-    console.log(code);
 
     const hashedCode = await hash(code, 12);
 
@@ -66,12 +64,34 @@ class AuthService {
       expirationTime
     };
 
-    const recoverCode = await new RecoverCodeRepository().create(newRecoverCode);
-    return recoverCode;
+    const recoverObject = await new RecoverCodeRepository().create(newRecoverCode);
+    return recoverObject;
   }
 
-  generateToken(user: IUser) {
+  async authenticatePasswordReset(email: string) {
+
+    await new RecoverCodeRepository().delete(email);
+    const user = await new UsersRepository().findByEmail(email);
+
+    if(user) {
+      const accessToken = this.generateToken(user, '5m');
+      return { accessToken };
+    }
+
+  }
+
+  async resetPassword(userId: string, password: string) {
+    const passwordVerified = this.verifyPassword(password);
+    const hashedPassword = await hash(passwordVerified, 12);
+
+    const updatedUser = await new UsersRepository().updateUserPassword(userId, hashedPassword);
+
+    return updatedUser;
+  }
+
+  generateToken(user: IUser, expiresIn: string) {
     const jwtSecret = process.env.JWT_SECRET;
+
     if (jwtSecret) {
       const token = sign(
         {
@@ -85,7 +105,7 @@ class AuthService {
         jwtSecret,
         {
           subject: user.id,
-          expiresIn: '1d'
+          expiresIn
         }
       );
       return token;
