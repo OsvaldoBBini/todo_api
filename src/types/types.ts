@@ -35,3 +35,9 @@ export interface IRecoverCode {
   code: string,
   expirationTime: Date
 }
+
+export interface INewFolder {
+  userId: string,
+  name: string,
+  description?: string
+}

@@ -15,8 +15,8 @@ class AuthService {
       throw new Error('This email is already in use');
     }
 
-    const passwordVerified = this.verifyPassword(password);
-    const hashedPassword = await hash(passwordVerified, 12);
+    this.verifyPassword(password);
+    const hashedPassword = await hash(password, 12);
 
     const user = await new UsersRepository().create({
       name, password: hashedPassword, email
@@ -54,8 +54,8 @@ class AuthService {
 
     const now = new Date();
     const expirationTime = new Date(now.getTime() + 2 * 60 * 1000);
-    const code = String(Math.floor(Math.random() * (99999999 - 10000000 + 1)) + 10000000);
 
+    const code = String(Math.floor(Math.random() * (99999999 - 10000000 + 1)) + 10000000);
     const hashedCode = await hash(code, 12);
 
     const newRecoverCode = {
@@ -64,8 +64,8 @@ class AuthService {
       expirationTime
     };
 
-    const recoverObject = await new RecoverCodeRepository().create(newRecoverCode);
-    return recoverObject;
+    await new RecoverCodeRepository().create(newRecoverCode);
+    return null;
   }
 
   async authenticatePasswordReset(email: string) {
@@ -81,12 +81,12 @@ class AuthService {
   }
 
   async resetPassword(userId: string, password: string) {
-    const passwordVerified = this.verifyPassword(password);
-    const hashedPassword = await hash(passwordVerified, 12);
+    this.verifyPassword(password);
+    const hashedPassword = await hash(password, 12);
 
-    const updatedUser = await new UsersRepository().updateUserPassword(userId, hashedPassword);
+    await new UsersRepository().updateUserPassword(userId, hashedPassword);
 
-    return updatedUser;
+    return null;
   }
 
   generateToken(user: IUser, expiresIn: string) {
@@ -131,8 +131,6 @@ class AuthService {
     if(!verifyCamalCase) {
       throw new Error('At least one camal case letter is necessary');
     }
-
-    return password;
   }
 
 }
