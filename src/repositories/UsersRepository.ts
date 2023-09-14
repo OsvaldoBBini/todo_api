@@ -17,7 +17,8 @@ class UsersRepository {
 
   async findById(userId: string) {
     const user = await prismaClient.users.findUnique({
-      where: { id: userId }
+      where: { id: userId },
+      select: { name: true, email: true, profilePicture: true }
     });
     return user;
   }

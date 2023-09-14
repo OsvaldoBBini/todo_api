@@ -20,5 +20,6 @@ router.post('/reset_password', ensureAuthenticated, new AuthController().resetPa
 router.get('/user/me', ensureAuthenticated, new UserController().getUser);
 router.patch('/user/me', ensureAuthenticated, uploadPicture, new UserController().updateUser);
 
+router.get('/folders', ensureAuthenticated, new FoldersController().findAllFoldersByUserId);
 router.post('/folders', ensureAuthenticated, new FoldersController().createFolder);
 

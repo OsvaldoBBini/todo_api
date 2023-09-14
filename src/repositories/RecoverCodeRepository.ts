@@ -4,7 +4,7 @@ import prismaClient from '../prisma';
 class RecoverCodeRepository {
 
   async create(newRecoverCode: IRecoverCode) {
-    const recoverObject =  await prismaClient.recoverCodes.create({data: newRecoverCode});
+    const recoverObject = await prismaClient.recoverCodes.create({data: newRecoverCode});
     return recoverObject;
   }
 

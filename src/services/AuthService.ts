@@ -65,7 +65,7 @@ class AuthService {
     };
 
     await new RecoverCodeRepository().create(newRecoverCode);
-    return null;
+    return code;// until create a service to send a email with a code
   }
 
   async authenticatePasswordReset(email: string) {
@@ -84,9 +84,8 @@ class AuthService {
     this.verifyPassword(password);
     const hashedPassword = await hash(password, 12);
 
-    await new UsersRepository().updateUserPassword(userId, hashedPassword);
-
-    return null;
+    const user = await new UsersRepository().updateUserPassword(userId, hashedPassword);
+    return user;
   }
 
   generateToken(user: IUser, expiresIn: string) {
