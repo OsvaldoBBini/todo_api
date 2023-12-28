@@ -10,9 +10,26 @@ class FoldersRepository {
     return folders;
   }
 
+  async findFolder(userId: string, folderId: string) {
+    const folder = await prismaClient.folders.findFirst({
+      where: {id: folderId, userId},
+      include: {
+        subTasks: true
+      }
+    });
+    return folder;
+  }
+
   async create(newFolder: INewFolder) {
-    await prismaClient.folders.create({data: newFolder});
-    return null;
+    const folder = await prismaClient.folders.create({data: newFolder});
+    return folder;
+  }
+
+  async validateFolderOwner(userId: string, folderId: string) {
+    const isOwner = await prismaClient.folders.findFirst({
+      where: { id: folderId, userId },
+    });
+    return isOwner;
   }
 
 }

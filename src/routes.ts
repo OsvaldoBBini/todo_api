@@ -21,5 +21,6 @@ router.get('/user/me', ensureAuthenticated, new UserController().getUser);
 router.patch('/user/me', ensureAuthenticated, uploadPicture, new UserController().updateUser);
 
 router.get('/folders', ensureAuthenticated, new FoldersController().findAllFoldersByUserId);
+router.get('/folders/:folderId', ensureAuthenticated, new FoldersController().findFolder);
 router.post('/folders', ensureAuthenticated, new FoldersController().createFolder);
 
