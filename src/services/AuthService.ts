@@ -122,13 +122,13 @@ class AuthService {
     const specialChars = /[^\w\s\d]/;
     const verifySpecialChars = specialChars.test(password);
     if(!verifySpecialChars) {
-      throw new Error('At least one special character is necessary');
+      throw new Error('Your password must have at least one special character');
     }
 
     const camalCase = /[A-Z]/g;
     const verifyCamalCase = camalCase.test(password);
     if(!verifyCamalCase) {
-      throw new Error('At least one camal case letter is necessary');
+      throw new Error('Your password must have at least one camal case letter');
     }
   }
 

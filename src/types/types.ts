@@ -5,7 +5,6 @@ export interface INewUser {
 }
 
 export interface IUserInfos {
-  id: string
   name: string,
   email: string,
   profilePicture: string,

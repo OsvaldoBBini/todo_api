@@ -28,8 +28,8 @@ class FoldersController {
     try {
       const { userId } = request;
       const {name, description} = request.body;
-      const folder = await new FoldersService().create({userId, name, description});
-      return response.sendStatus(204).json(folder);
+      await new FoldersService().create({userId, name, description});
+      return response.sendStatus(204);
     } catch (err) {
       return response.json({error: (err as Error).message});
     }

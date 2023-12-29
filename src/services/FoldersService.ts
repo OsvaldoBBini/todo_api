@@ -21,11 +21,11 @@ class FoldersService {
 
   async create(newFolder: INewFolder) {
     const {userId, name, description} = newFolder;
-    const folder = await new FoldersRepository().create({
+
+    await new FoldersRepository().create({
       userId, name, description
     });
 
-    return folder;
   }
 
   async validateFolderOwenership(userId: string, folderId: string) {

@@ -5,16 +5,22 @@ class FoldersRepository {
 
   async findAllFolders(userId: string) {
     const folders = await prismaClient.folders.findMany({
-      where: {userId}
+      where: {userId},
+      select: {
+        id: true,
+        description: true,
+        name: true
+      }
     });
     return folders;
   }
 
   async findFolder(userId: string, folderId: string) {
-    const folder = await prismaClient.folders.findFirst({
+    const folder = await prismaClient.folders.findUnique({
       where: {id: folderId, userId},
-      include: {
-        subTasks: true
+      select: {
+        userId: false,
+        tasks: true
       }
     });
     return folder;

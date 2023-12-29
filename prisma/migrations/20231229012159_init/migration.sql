@@ -34,6 +34,7 @@ CREATE TABLE "folders" (
 CREATE TABLE "tasks" (
     "id" UUID NOT NULL,
     "folder_id" UUID NOT NULL,
+    "user_id" UUID NOT NULL,
     "description" TEXT NOT NULL,
     "status" BOOLEAN NOT NULL,
 
@@ -43,6 +44,7 @@ CREATE TABLE "tasks" (
 -- CreateTable
 CREATE TABLE "subtasks" (
     "id" UUID NOT NULL,
+    "user_id" UUID NOT NULL,
     "folder_id" UUID NOT NULL,
     "task_id" UUID NOT NULL,
     "description" TEXT NOT NULL,
@@ -70,7 +72,10 @@ ALTER TABLE "folders" ADD CONSTRAINT "folders_user_id_fkey" FOREIGN KEY ("user_i
 ALTER TABLE "tasks" ADD CONSTRAINT "tasks_folder_id_fkey" FOREIGN KEY ("folder_id") REFERENCES "folders"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "subtasks" ADD CONSTRAINT "subtasks_folder_id_fkey" FOREIGN KEY ("folder_id") REFERENCES "folders"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "tasks" ADD CONSTRAINT "tasks_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "subtasks" ADD CONSTRAINT "subtasks_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "subtasks" ADD CONSTRAINT "subtasks_task_id_fkey" FOREIGN KEY ("task_id") REFERENCES "tasks"("id") ON DELETE CASCADE ON UPDATE CASCADE;
