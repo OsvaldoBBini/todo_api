@@ -23,11 +23,19 @@ class UsersRepository {
     return user;
   }
 
+  async findUserPassword(userId: string) {
+    const password = await prismaClient.users.findUnique({
+      where: {id: userId},
+      select: { password: true }
+    });
+    return password;
+  }
+
   async updateUserInfos(userId: string, updateUserData: IUpdateUserInfos) {
 
     const {name, email, profilePicture} = updateUserData;
 
-    const user = await prismaClient.users.update({
+    await prismaClient.users.update({
       where: {
         id: userId
       },
@@ -37,11 +45,11 @@ class UsersRepository {
         profilePicture
       }
     });
-    return user;
+    return null;
   }
 
   async updateUserPassword(userId: string, password: string) {
-    const user = await prismaClient.users.update({
+    await prismaClient.users.update({
       where: {
         id: userId
       },
@@ -49,7 +57,16 @@ class UsersRepository {
         password
       }
     });
-    return user;
+    return null;
+  }
+
+  async deleteUserAccount(userId: string) {
+    await prismaClient.users.delete({
+      where: {
+        id: userId
+      }
+    });
+    return null;
   }
 
 }

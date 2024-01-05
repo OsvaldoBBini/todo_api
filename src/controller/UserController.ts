@@ -9,7 +9,7 @@ class UserController {
       return response.json(user);
     }
     catch (err) {
-      return response.json({error: (err as Error).message});
+      return response.status(400).json({error: (err as Error).message});
     }
   }
 
@@ -29,7 +29,21 @@ class UserController {
       return response.status(204).json(user);
     }
     catch (err) {
-      return response.json({error: (err as Error).message});
+      return response.status(400).json({error: (err as Error).message});
+    }
+  }
+
+  async deleteUserAccount(request: Request, response: Response) {
+    try {
+      const { userId } = request;
+      const { password } = request.body;
+
+      const user = await new UsersService().deleteAccount(userId, password);
+
+      return response.status(204).json(user);
+    }
+    catch (err) {
+      return response.status(400).json({error: (err as Error).message});
     }
   }
 

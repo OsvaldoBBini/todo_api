@@ -1,5 +1,5 @@
 import prismaClient from '../prisma';
-import { INewFolder } from '../types/types';
+import { INewFolder, IUpdateFolderInfos } from '../types/types';
 
 class FoldersRepository {
 
@@ -20,6 +20,7 @@ class FoldersRepository {
       where: {id: folderId, userId},
       select: {
         userId: false,
+        id: true,
         tasks: true
       }
     });
@@ -31,8 +32,19 @@ class FoldersRepository {
     return folder;
   }
 
+  async update(userId: string, folderId: string, updateFolderInfo: IUpdateFolderInfos) {
+    const { name, description } = updateFolderInfo;
+    await prismaClient.folders.update({where: {userId, id: folderId}, data: {name, description}});
+    return null;
+  }
+
+  async delete(userId: string, folderId: string) {
+    await prismaClient.folders.delete({where: {id: folderId, userId}});
+    return null;
+  }
+
   async validateFolderOwner(userId: string, folderId: string) {
-    const isOwner = await prismaClient.folders.findFirst({
+    const isOwner = await prismaClient.folders.findUnique({
       where: { id: folderId, userId },
     });
     return isOwner;

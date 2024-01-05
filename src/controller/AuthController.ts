@@ -10,7 +10,7 @@ class AuthController {
       return response.json(accessToken);
     }
     catch (err) {
-      return response.json({error: (err as Error).message});
+      return response.status(403).json({error: (err as Error).message});
     }
   }
 
@@ -21,7 +21,7 @@ class AuthController {
       return response.json(accessToken);
     }
     catch (err) {
-      return response.json({error: (err as Error).message});
+      return response.status(404).json({error: (err as Error).message});
     }
   }
 
@@ -32,7 +32,7 @@ class AuthController {
       return response.status(201).json({recoverCode});
     }
     catch (err) {
-      return response.json({error: (err as Error).message});
+      return response.status(404).json({error: (err as Error).message});
     }
   }
 
@@ -56,7 +56,7 @@ class AuthController {
       return response.status(204).json(user);
     }
     catch (err) {
-      return response.json({error: (err as Error).message});
+      return response.status(406).json({error: (err as Error).message});
     }
   }
 

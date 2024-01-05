@@ -40,3 +40,8 @@ export interface INewFolder {
   name: string,
   description?: string
 }
+
+export interface IUpdateFolderInfos {
+  name: string,
+  description: string
+}

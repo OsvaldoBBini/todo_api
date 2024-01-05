@@ -47,9 +47,14 @@ class AuthService {
   async recoverPassword(email: string) {
 
     const emailTaken = await new UsersRepository().findByEmail(email);
+    const vareifyCodeExistence = await new RecoverCodeRepository().findCodeByEmail(email);
 
-    if (!emailTaken){
+    if (!emailTaken) {
       throw new Error('User not found, please provide valid credentials');
+    }
+
+    if (vareifyCodeExistence) {
+      await new RecoverCodeRepository().delete(email);
     }
 
     const now = new Date();
@@ -70,11 +75,11 @@ class AuthService {
 
   async authenticatePasswordReset(email: string) {
 
-    await new RecoverCodeRepository().delete(email);
     const user = await new UsersRepository().findByEmail(email);
 
     if(user) {
       const accessToken = this.generateToken(user, '5m');
+      await new RecoverCodeRepository().delete(email);
       return { accessToken };
     }
 
@@ -83,9 +88,8 @@ class AuthService {
   async resetPassword(userId: string, password: string) {
     this.verifyPassword(password);
     const hashedPassword = await hash(password, 12);
-
-    const user = await new UsersRepository().updateUserPassword(userId, hashedPassword);
-    return user;
+    await new UsersRepository().updateUserPassword(userId, hashedPassword);
+    return null;
   }
 
   generateToken(user: IUser, expiresIn: string) {

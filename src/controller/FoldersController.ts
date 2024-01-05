@@ -3,7 +3,7 @@ import { FoldersService } from '../services/FoldersService';
 
 class FoldersController {
 
-  async findAllFoldersByUserId(request: Request, response: Response) {
+  async listAllFoldersByUserId(request: Request, response: Response) {
     try {
       const { userId } = request;
       const folders = await new FoldersService().getAllFolders(userId);
@@ -13,7 +13,7 @@ class FoldersController {
     }
   }
 
-  async findFolder(request: Request, response: Response) {
+  async showFolder(request: Request, response: Response) {
     try {
       const { userId } = request;
       const { folderId } = request.params;
@@ -24,12 +24,35 @@ class FoldersController {
     }
   }
 
-  async createFolder(request: Request, response: Response) {
+  async createNewFolder(request: Request, response: Response) {
     try {
       const { userId } = request;
       const {name, description} = request.body;
-      await new FoldersService().create({userId, name, description});
-      return response.sendStatus(204);
+      const folder = await new FoldersService().createFolder({userId, name, description});
+      return response.status(204).json(folder);
+    } catch (err) {
+      return response.json({error: (err as Error).message});
+    }
+  }
+
+  async updateFolder(request: Request, response: Response) {
+    try {
+      const { userId } = request;
+      const { folderId } = request.params;
+      const { name, description } = request.body;
+      const folder = await new FoldersService().updateFolderInfos(userId, folderId, name, description);
+      return response.status(204).json(folder);
+    } catch (err) {
+      return response.json({error: (err as Error).message});
+    }
+  }
+
+  async deleteFolder(request: Request, response: Response) {
+    try {
+      const { userId } = request;
+      const { folderId } = request.params;
+      const folder = await new FoldersService().deleteFolder(userId, folderId);
+      return response.status(204).json(folder);
     } catch (err) {
       return response.json({error: (err as Error).message});
     }

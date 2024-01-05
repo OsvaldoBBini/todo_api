@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import multer from 'multer';
 import path from 'node:path';
+import fs from 'fs';
 
 export function uploadPicture(request: Request, response: Response, next: NextFunction) {
   const { userId } = request;
@@ -18,15 +19,18 @@ export function uploadPicture(request: Request, response: Response, next: NextFu
 
   upload.single('profilePicture')(request, response, () => {
     try {
-      if (request.file) {
-        request.profilePicturePath = request.file.path;
+
+      if (!request.file) {
+        fs.unlinkSync(path.resolve(__dirname, '..', '..', `uploads\\${userId}.png`));
+        request.profilePicturePath = '';
         return next();
       }
-      request.profilePicturePath = '';
+
+      request.profilePicturePath = request.file.path;
       return next();
     }
     catch {
-      throw new Error('Unable to load the profile picture');
+      return response.status(400).json({error: 'Unable to load the profile picture'});
     }
   });
 }

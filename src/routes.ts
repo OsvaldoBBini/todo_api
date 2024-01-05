@@ -18,9 +18,12 @@ router.post('/authenticate_password_update', ensureRecoverCode, new AuthControll
 router.post('/reset_password', ensureAuthenticated, new AuthController().resetPassword);
 
 router.get('/user/me', ensureAuthenticated, new UserController().getUser);
-router.patch('/user/me', ensureAuthenticated, uploadPicture, new UserController().updateUser);
+router.put('/user/me', ensureAuthenticated, uploadPicture, new UserController().updateUser);
+router.delete('/user/me', ensureAuthenticated, new UserController().deleteUserAccount);
 
-router.get('/folders', ensureAuthenticated, new FoldersController().findAllFoldersByUserId);
-router.get('/folders/:folderId', ensureAuthenticated, new FoldersController().findFolder);
-router.post('/folders', ensureAuthenticated, new FoldersController().createFolder);
+router.post('/folders', ensureAuthenticated, new FoldersController().createNewFolder);
+router.get('/folders', ensureAuthenticated, new FoldersController().listAllFoldersByUserId);
+router.get('/folders/:folderId', ensureAuthenticated, new FoldersController().showFolder);
+router.put('/folders/:folderId', ensureAuthenticated, new FoldersController().updateFolder);
+router.delete('/folders/:folderId', ensureAuthenticated, new FoldersController().deleteFolder);
 
