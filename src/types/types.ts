@@ -45,3 +45,10 @@ export interface IUpdateFolderInfos {
   name: string,
   description: string
 }
+
+export interface INewTask {
+  userId: string,
+  folderId: string,
+  description: string,
+  status: boolean
+}

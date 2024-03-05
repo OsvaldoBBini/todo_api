@@ -19,22 +19,34 @@ class FoldersService {
 
   async createFolder(newFolder: INewFolder) {
     const {userId, name, description} = newFolder;
-    await new FoldersRepository().create({
-      userId, name, description
-    });
+    try {
+      await new FoldersRepository().create({
+        userId, name, description
+      });
+    } catch {
+      throw new Error('The system was unable to create the folder');
+    }
     return null;
   }
 
   async updateFolderInfos(userId: string, folderId: string, name: string, description: string) {
     await this.validateFolderOwenership(userId, folderId);
     const updateInfos = {name, description};
-    await new FoldersRepository().update(userId, folderId, updateInfos);
+    try {
+      await new FoldersRepository().update(userId, folderId, updateInfos);
+    } catch {
+      throw new Error('The system was unable to upload folder\'s data');
+    }
     return null;
   }
 
   async deleteFolder(userId: string, folderId: string) {
     await this.validateFolderOwenership(userId, folderId);
-    await new FoldersRepository().delete(userId, folderId);
+    try {
+      await new FoldersRepository().delete(userId, folderId);
+    } catch {
+      throw new Error('The system was unable to delete the folder');
+    }
     return null;
   }
 

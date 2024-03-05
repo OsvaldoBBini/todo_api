@@ -7,6 +7,7 @@ import { FoldersController } from './controller/FoldersController';
 import { ensureAuthenticated } from './middleware/ensureAuthenticated';
 import { uploadPicture } from './middleware/uploadPicture';
 import { ensureRecoverCode } from './middleware/ensureRecoverCode';
+import { TasksController } from './controller/TasksController';
 
 export const router = Router();
 
@@ -26,4 +27,7 @@ router.get('/folders', ensureAuthenticated, new FoldersController().listAllFolde
 router.get('/folders/:folderId', ensureAuthenticated, new FoldersController().showFolder);
 router.put('/folders/:folderId', ensureAuthenticated, new FoldersController().updateFolder);
 router.delete('/folders/:folderId', ensureAuthenticated, new FoldersController().deleteFolder);
+
+router.get('/tasks/:folderId', ensureAuthenticated, new TasksController().listAllTasksByFolderId);
+router.post('/tasks', ensureAuthenticated, new TasksController().createNewTask);
 
