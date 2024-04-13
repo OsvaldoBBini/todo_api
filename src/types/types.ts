@@ -29,11 +29,6 @@ export interface IUserLogin {
   password: string
 }
 
-export interface IRecoverCode {
-  email: string,
-  code: string,
-  expirationTime: Date
-}
 
 export interface INewFolder {
   userId: string,

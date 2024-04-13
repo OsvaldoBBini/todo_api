@@ -2,7 +2,6 @@ import { UsersRepository } from '../repositories/UsersRepository';
 import { hash, compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 import { INewUser, IUser, IUserLogin } from '../types/types';
-import { RecoverCodeRepository } from '../repositories/RecoverCodeRepository';
 
 class AuthService {
 
@@ -42,54 +41,6 @@ class AuthService {
 
     const accessToken = this.generateToken(user, '1d');
     return { accessToken };
-  }
-
-  async recoverPassword(email: string) {
-
-    const emailTaken = await new UsersRepository().findByEmail(email);
-    const vareifyCodeExistence = await new RecoverCodeRepository().findCodeByEmail(email);
-
-    if (!emailTaken) {
-      throw new Error('User not found, please provide valid credentials');
-    }
-
-    if (vareifyCodeExistence) {
-      await new RecoverCodeRepository().delete(email);
-    }
-
-    const now = new Date();
-    const expirationTime = new Date(now.getTime() + 2 * 60 * 1000);
-
-    const code = String(Math.floor(Math.random() * (99999999 - 10000000 + 1)) + 10000000);
-    const hashedCode = await hash(code, 12);
-
-    const newRecoverCode = {
-      email,
-      code: hashedCode,
-      expirationTime
-    };
-
-    await new RecoverCodeRepository().create(newRecoverCode);
-    return code;// until create a service to send a email with a code
-  }
-
-  async authenticatePasswordReset(email: string) {
-
-    const user = await new UsersRepository().findByEmail(email);
-
-    if(user) {
-      const accessToken = this.generateToken(user, '5m');
-      await new RecoverCodeRepository().delete(email);
-      return { accessToken };
-    }
-
-  }
-
-  async resetPassword(userId: string, password: string) {
-    this.verifyPassword(password);
-    const hashedPassword = await hash(password, 12);
-    await new UsersRepository().updateUserPassword(userId, hashedPassword);
-    return null;
   }
 
   generateToken(user: IUser, expiresIn: string) {
