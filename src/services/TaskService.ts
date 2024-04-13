@@ -6,8 +6,13 @@ class TasksService {
 
   async getTaskDetails(userId: string, folderId: string, taskId: string) {
     await new FoldersService().validateFolderOwenership(userId, folderId);
-    const task = await new TasksRepository().findTaskDetails(userId, folderId, taskId);
-    return task;
+    try {
+      const task = await new TasksRepository().findTaskDetails(userId, folderId, taskId);
+      return task;
+    }
+    catch {
+      throw new Error('The system was unable load task\'s detail');
+    }
   }
 
   async createTask(newTask: INewTask) {
@@ -17,11 +22,11 @@ class TasksService {
       await new TasksRepository().create({
         userId, folderId, description, status
       });
+      return null;
     }
     catch {
-      throw new Error('The system was unable to create the folder');
+      throw new Error('The system was unable create the task');
     }
-    return null;
   }
 
   async updateTaskInfos(userId: string, folderId: string, taskId: string, description: string, status: boolean) {
@@ -29,10 +34,20 @@ class TasksService {
     const updateInfos = {description, status};
     try {
       await new TasksRepository().update(userId, folderId, taskId, updateInfos);
+      return null;
     } catch {
       throw new Error('The system was unable to upload task\'s data');
     }
-    return null;
+  }
+
+  async deleteTask(userId: string, folderId: string, taskId: string){
+    await new FoldersService().validateFolderOwenership(userId, folderId);
+    try {
+      await new TasksRepository().delete(userId, folderId, taskId);
+      return null;
+    } catch {
+      throw new Error('The system was unable to delete the task');
+    }
   }
 
 }

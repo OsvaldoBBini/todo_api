@@ -26,6 +26,11 @@ class TasksRepository {
     return null;
   }
 
+  async delete(userId: string, folderId: string, taskId: string) {
+    await prismaClient.tasks.delete({where:{userId, folderId, id: taskId}});
+    return null;
+  }
+
 }
 
 export {TasksRepository};
