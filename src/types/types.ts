@@ -52,3 +52,8 @@ export interface INewTask {
   description: string,
   status: boolean
 }
+
+export interface IUpdateTaskInfo {
+  description: string,
+  status: boolean
+}

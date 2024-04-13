@@ -1,15 +1,16 @@
 import prismaClient from '../prisma';
-import { INewTask } from '../types/types';
+import { INewTask, IUpdateTaskInfo } from '../types/types';
 
 class TasksRepository {
 
-  async findAllTasks(userId: string, folderId: string) {
+  async findTaskDetails(userId: string, folderId: string, taskId: string) {
     const tasks = await prismaClient.tasks.findMany({
-      where: {userId, folderId},
+      where: {userId, id: taskId, folderId},
       select: {
         id: true,
         description: true,
-        status: true
+        status: true,
+        subTasks: true
       }
     });
     return tasks;
@@ -18,6 +19,11 @@ class TasksRepository {
   async create(newTask: INewTask) {
     const task = await prismaClient.tasks.create({data: newTask});
     return task;
+  }
+
+  async update(userId: string, folderId: string, taskId: string, updateTaskInfo: IUpdateTaskInfo) {
+    await prismaClient.tasks.update({where: {userId, folderId, id: taskId}, data: updateTaskInfo});
+    return null;
   }
 
 }

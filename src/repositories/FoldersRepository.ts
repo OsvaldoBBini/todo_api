@@ -21,7 +21,15 @@ class FoldersRepository {
       select: {
         userId: false,
         id: true,
-        tasks: true
+        tasks: {
+          select:{
+            id: true,
+            folderId: false,
+            userId: false,
+            description: true,
+            status: true
+          }
+        }
       }
     });
     return folder;
@@ -33,8 +41,7 @@ class FoldersRepository {
   }
 
   async update(userId: string, folderId: string, updateFolderInfo: IUpdateFolderInfos) {
-    const { name, description } = updateFolderInfo;
-    await prismaClient.folders.update({where: {userId, id: folderId}, data: {name, description}});
+    await prismaClient.folders.update({where: {userId, id: folderId}, data: updateFolderInfo});
     return null;
   }
 

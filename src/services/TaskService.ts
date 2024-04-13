@@ -4,9 +4,10 @@ import { FoldersService } from './FoldersService';
 
 class TasksService {
 
-  async getAllTasks(userId: string, folderId: string) {
-    const tasks = await new TasksRepository().findAllTasks(userId, folderId);
-    return tasks;
+  async getTaskDetails(userId: string, folderId: string, taskId: string) {
+    await new FoldersService().validateFolderOwenership(userId, folderId);
+    const task = await new TasksRepository().findTaskDetails(userId, folderId, taskId);
+    return task;
   }
 
   async createTask(newTask: INewTask) {
@@ -19,6 +20,17 @@ class TasksService {
     }
     catch {
       throw new Error('The system was unable to create the folder');
+    }
+    return null;
+  }
+
+  async updateTaskInfos(userId: string, folderId: string, taskId: string, description: string, status: boolean) {
+    await new FoldersService().validateFolderOwenership(userId, folderId);
+    const updateInfos = {description, status};
+    try {
+      await new TasksRepository().update(userId, folderId, taskId, updateInfos);
+    } catch {
+      throw new Error('The system was unable to upload task\'s data');
     }
     return null;
   }

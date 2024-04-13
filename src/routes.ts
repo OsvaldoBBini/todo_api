@@ -25,9 +25,10 @@ router.delete('/user/me', ensureAuthenticated, new UserController().deleteUserAc
 router.post('/folders', ensureAuthenticated, new FoldersController().createNewFolder);
 router.get('/folders', ensureAuthenticated, new FoldersController().listAllFoldersByUserId);
 router.get('/folders/:folderId', ensureAuthenticated, new FoldersController().showFolder);
+router.get('/folders/:folderId/:taskId', ensureAuthenticated, new TasksController().showTask);
 router.put('/folders/:folderId', ensureAuthenticated, new FoldersController().updateFolder);
+router.put('/folders/:folderId/:taskId', ensureAuthenticated, new TasksController().updateTask);
 router.delete('/folders/:folderId', ensureAuthenticated, new FoldersController().deleteFolder);
 
-router.get('/tasks/:folderId', ensureAuthenticated, new TasksController().listAllTasksByFolderId);
 router.post('/tasks', ensureAuthenticated, new TasksController().createNewTask);
 
