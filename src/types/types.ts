@@ -45,7 +45,7 @@ export interface INewTask {
   userId: string,
   folderId: string,
   description: string,
-  status: boolean
+  status?: boolean
 }
 
 export interface IUpdateTaskInfo {

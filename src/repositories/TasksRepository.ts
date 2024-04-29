@@ -10,7 +10,6 @@ class TasksRepository {
         id: true,
         description: true,
         status: true,
-        subTasks: true
       }
     });
     return tasks;
